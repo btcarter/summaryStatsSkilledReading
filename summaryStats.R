@@ -4,10 +4,13 @@
 # This script will compute summary statistics for participants in the Skilled Reading Project
 
 #### ENVIRONMENT ####
-list.of.packages <- c("psych")                                                                             # list of packages this script needs to run
+list.of.packages <- c("psych","stats")                                                                             # list of packages this script needs to run
 # data
 DEMO = "~/Box/LukeLab/SkilledReadingStudy/data/demographics/participantDemographics.csv"
 EYES = "~/Box/LukeLab/SkilledReadingStudy/data/eyeTrackingData/allRuns.csv"
+# list of variables to summarize
+variableList=c("CURRENT_FIX_DURATION","")
+
 
 #### COMMANDS ####
 # load packages
@@ -20,9 +23,23 @@ DEMO <- read.csv(DEMO, header=TRUE,sep=",")
 EYES <- read.csv(EYES, header =TRUE,sep=",")
 
 # compute summary statistics for eye tracking data and put it in the DEMO dataframe
-summarize <- function(variable){
-  for (participant in DEMO$recording_session_label) {
-    name <- paste(variable,"_µ")
-    DEMO$name[DEMO$recording_session_label == participant ] <-  
-  }
+#   function to compute the mean of the input variable for each participant
+makeMeans <- function(variable,demographicDF,etDF){
+  vName=as.name(paste(as.character(variable),"_µ",sep=""))
+  agged <- aggregate(etDF[[variable]], list(etDF$RECORDING_SESSION_LABEL),FUN = "mean")
+  demographicDF[[vName]] <- agged[["x"]][demographicDF[["recording_session_label"]] == agged[["Group.1"]]]
+  return(demographicDF)
+}
+
+#   function to compute standard deviation of the input variable for each participant
+makeSigma <- function(variable,demographicDF,etDF){
+  vName=as.name(paste(as.character(variable),"_µ",sep=""))
+  agged <- aggregate(etDF[[variable]], list(etDF$RECORDING_SESSION_LABEL),FUN = "SD")
+  demographicDF[[vName]] <- agged[["x"]][demographicDF[["recording_session_label"]] == agged[["Group.1"]]]
+  return(demographicDF)
+}
+
+for (I in variableList) {
+  DEMO <- makeMeans(I,DEMO,EYES)
+  DEMO <- makeSigma(I,DEMO,EYES)
 }
