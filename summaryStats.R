@@ -9,7 +9,7 @@ list.of.packages <- c("psych","stats")                                          
 DEMO = "~/Box/LukeLab/SkilledReadingStudy/data/demographics/participantDemographics.csv"
 EYES = "~/Box/LukeLab/SkilledReadingStudy/data/eyeTrackingData/allRuns.csv"
 # list of variables to summarize
-variableList=c("CURRENT_FIX_DURATION","")
+variableList=c("CURRENT_FIX_DURATION","NEXT_SAC_AVG_VELOCITY","NEXT_SAC_DURATION","CURRENT_FIX_PUPIL",)
 
 
 #### COMMANDS ####
