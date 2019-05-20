@@ -9,8 +9,7 @@ list.of.packages <- c("psych","stats")                                          
 DEMO = "~/Box/LukeLab/SkilledReadingStudy/data/demographics/participantDemographics.csv"
 EYES = "~/Box/LukeLab/SkilledReadingStudy/data/eyeTrackingData/allRuns.csv"
 # list of variables to summarize
-variableList=c("CURRENT_FIX_DURATION","NEXT_SAC_AVG_VELOCITY","NEXT_SAC_DURATION","CURRENT_FIX_PUPIL",)
-
+variableList=c("CURRENT_FIX_DURATION","NEXT_SAC_AVG_VELOCITY","NEXT_SAC_DURATION","CURRENT_FIX_PUPIL")
 
 #### COMMANDS ####
 # load packages
@@ -19,27 +18,51 @@ if(length(new.packages)) install.packages(new.packages, dependencies = TRUE)    
 lapply(list.of.packages,library,character.only = TRUE)                                                                # load packages
 
 # read in data
-DEMO <- read.csv(DEMO, header=TRUE,sep=",")
-EYES <- read.csv(EYES, header =TRUE,sep=",")
+DEMO <- read.csv(DEMO, header=TRUE,sep=",",na.strings = ".")
+EYES <- read.csv(EYES, header =TRUE,sep=",",na.strings = ".")
 
 # compute summary statistics for eye tracking data and put it in the DEMO dataframe
 #   function to compute the mean of the input variable for each participant
 makeMeans <- function(variable,demographicDF,etDF){
   vName=as.name(paste(as.character(variable),"_µ",sep=""))
-  agged <- aggregate(etDF[[variable]], list(etDF$RECORDING_SESSION_LABEL),FUN = "mean")
+  agged <- aggregate(etDF[[variable]], list(etDF$RECORDING_SESSION_LABEL),FUN = "mean", na.rm = TRUE)
   demographicDF[[vName]] <- agged[["x"]][demographicDF[["recording_session_label"]] == agged[["Group.1"]]]
   return(demographicDF)
 }
 
 #   function to compute standard deviation of the input variable for each participant
 makeSigma <- function(variable,demographicDF,etDF){
-  vName=as.name(paste(as.character(variable),"_µ",sep=""))
-  agged <- aggregate(etDF[[variable]], list(etDF$RECORDING_SESSION_LABEL),FUN = "SD")
+  vName=as.name(paste(as.character(variable),"_σ",sep=""))
+  agged <- aggregate(etDF[[variable]], list(etDF$RECORDING_SESSION_LABEL),FUN = "SD", na.rm = TRUE)
   demographicDF[[vName]] <- agged[["x"]][demographicDF[["recording_session_label"]] == agged[["Group.1"]]]
   return(demographicDF)
 }
 
+#   function to compute saccade latency
+makeLatency <- function(){
+  
+}
+
+#   function for % rightward saccades
+percentRightward <- function(demographicDF,etDF){
+  
+}
+
+#   function for number of regressions
+countRegressions <- function() {
+  
+}
+
+
+#   function for number of fixations
+countFixations <- function() {
+  
+}
+
+
+#### DO THE MATHS I TOLD YOU ####
 for (I in variableList) {
   DEMO <- makeMeans(I,DEMO,EYES)
   DEMO <- makeSigma(I,DEMO,EYES)
 }
+
