@@ -38,31 +38,23 @@ makeSigma <- function(variable,demographicDF,etDF){
   return(demographicDF)
 }
 
-#   function to compute saccade latency
-makeLatency <- function(){
-  
+#   function for % leftward or upward saccades
+regressions <- function(demographicDF,etDF){
+  demographicDF[["REGRESSIONS"]] <- length(etDF[["RECORDING_SESSION_LABEL"]][etDF[["RECORDING_SESSION_LABEL"]] == demographicDF[["recording_session_label"]] & etDF[["NEXT_SAC_DIRECTION"]] == "LEFT"]) + length(etDF[["RECORDING_SESSION_LABEL"]][etDF[["RECORDING_SESSION_LABEL"]] == demographicDF[["recording_session_label"]] & etDF[["NEXT_SAC_DIRECTION"]] == "UP"])
 }
-
-#   function for % rightward saccades
-percentRightward <- function(demographicDF,etDF){
-  
-}
-
-#   function for number of regressions
-countRegressions <- function() {
-  
-}
-
 
 #   function for number of fixations
-countFixations <- function() {
-  
+countFixations <- function(demographicDF,etDF) {
+  demographicDF[["totalFixations"]] <- length(etDF[["RECORDING_SESSION_LABEL"]][etDF[["RECORDING_SESSION_LABEL"]] == demographicDF[["recording_session_label"]]])
 }
 
-
 #### DO THE MATHS I TOLD YOU ####
+# means and stanDevs
 for (I in variableList) {
   DEMO <- makeMeans(I,DEMO,EYES)
   DEMO <- makeSigma(I,DEMO,EYES)
 }
 
+# other statistics
+DEMO <- regressions(DEMO,EYES)
+DEMO <- countFixations(DEMO,EYES)
