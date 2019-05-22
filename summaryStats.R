@@ -38,14 +38,25 @@ makeSigma <- function(variable,demographicDF,etDF){
   return(demographicDF)
 }
 
-#   function for % leftward or upward saccades
+#   function for number of leftward or upward saccades
 regressions <- function(demographicDF,etDF){
-  demographicDF[["REGRESSIONS"]] <- length(etDF[["RECORDING_SESSION_LABEL"]][etDF[["RECORDING_SESSION_LABEL"]] == demographicDF[["recording_session_label"]] & etDF[["NEXT_SAC_DIRECTION"]] == "LEFT"]) + length(etDF[["RECORDING_SESSION_LABEL"]][etDF[["RECORDING_SESSION_LABEL"]] == demographicDF[["recording_session_label"]] & etDF[["NEXT_SAC_DIRECTION"]] == "UP"])
+  participants <- levels(demographicDF[["recording_session_label"]])
+  for (participant in participants) {
+    demographicDF[["REGRESSIONS"]][demographicDF[["recording_session_label"]] == participant] <-
+      length(etDF[["RECORDING_SESSION_LABEL"]][etDF[["RECORDING_SESSION_LABEL"]] == participant & etDF[["NEXT_SAC_DIRECTION"]] == "LEFT"]) +
+      length(etDF[["RECORDING_SESSION_LABEL"]][etDF[["RECORDING_SESSION_LABEL"]] == participant & etDF[["NEXT_SAC_DIRECTION"]] == "UP"])
+  }
+  return(demographicDF)
 }
 
 #   function for number of fixations
-countFixations <- function(demographicDF,etDF) {
-  demographicDF[["totalFixations"]] <- length(etDF[["RECORDING_SESSION_LABEL"]][etDF[["RECORDING_SESSION_LABEL"]] == demographicDF[["recording_session_label"]]])
+countFixations <- function(demographicDF,etDF){
+  participants <- levels(demographicDF[["recording_session_label"]])
+  for (participant in participants) {
+    demographicDF[["totalFixations"]][demographicDF[["recording_session_label"]] == participant] <-
+      length(etDF[["RECORDING_SESSION_LABEL"]][etDF[["RECORDING_SESSION_LABEL"]] == participant])
+    }
+  return(demographicDF)
 }
 
 #### DO THE MATHS I TOLD YOU ####
