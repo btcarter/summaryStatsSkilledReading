@@ -15,8 +15,9 @@
 #### ENVIRONMENT ####
 list.of.packages <- c("psych","stats")                                                                             # list of packages this script needs to run
 # data
-DEMO = "~/Box/LukeLab/SkilledReadingStudy/data/demographics/participantDemographics.csv"
-EYES = "~/Box/LukeLab/SkilledReadingStudy/data/eyeTrackingData/allRuns.csv"
+DEMO = "~/Box/LukeLab/SkilledReadingStudy/data/demographics/participantDemographics.csv"                           # csv with demographic information
+EYES = "~/Box/LukeLab/SkilledReadingStudy/data/eyeTrackingData/allRuns.csv"                                        # csv with combined fixation reports for all runs of the eye tracker
+NEW_DEMO = "~/Box/LukeLab/SkilledReadingStudy/data/demographics/participantDemographicsWithETStats.csv"            # new csv with added summary statistics
 # list of variables to summarize
 variableList=c("CURRENT_FIX_DURATION","NEXT_SAC_AVG_VELOCITY","NEXT_SAC_DURATION","CURRENT_FIX_PUPIL")
 
@@ -78,3 +79,7 @@ for (I in variableList) {
 # other statistics
 DEMO <- regressions(DEMO,EYES)
 DEMO <- countFixations(DEMO,EYES)
+
+
+# write an output csv
+write.csv(DEMO,NEW_DEMO,append=FALSE,row.names = FALSE)
