@@ -2,4 +2,5 @@
 
 ## Purpose
 1. Preprocess eye-tracking data by fixing participant labeling, removing excluded participants and concatenating fixation reports from each run.
-2. Compute summary statistics for individuals in the Skilled Reading Project.
+1. Compute summary statistics for individuals in the Skilled Reading Project.
+1. Add a predictive analysis to see if ACT can be predicted by eye tracking (or cortical) factors.
