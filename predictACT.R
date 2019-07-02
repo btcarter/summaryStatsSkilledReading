@@ -21,10 +21,12 @@ lapply(list.of.packages,library,character.only = TRUE)                          
 
 # functions
 
-# preprocessing
-  
-# predict
-  
-# evaluate
+#   function to make a model
 
-# output?
+#   function to make predictions based on model
+
+#   function to evaluate predictions
+  
+# execute
+
+# output
