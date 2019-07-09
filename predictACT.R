@@ -19,7 +19,7 @@ if(length(new.packages)) install.packages(new.packages, dependencies = TRUE)    
 lapply(list.of.packages,library,character.only = TRUE)                                                                # load packages
 
 
-# functions
+# FUNCTIONS
 
 #   function to select participants with ACT score
 makeParticipantList <- function(OCULO.DF,SUMM.DF) {
@@ -27,28 +27,55 @@ makeParticipantList <- function(OCULO.DF,SUMM.DF) {
   return(participants)
 }
 
-#   add ACT score to ET_DATA
-addACT <- function(OCULO.DF,SUMM.DF,LIST){
+#   add ACT score to ET_DATA and then select only participants with an ACT
+addACT <- function(OCULO.DF,SUMM.DF,LIST,PARTICIPANT){
   for (participant in LIST) {
     score <- SUMM.DF[["actScore"]][SUMM.DF[["recording_session_label"]]==participant]
+    gender <- SUMM.DF[["male.female"]][SUMM.DF[["recording_session_label"]]==participant]
+    race <- SUMM.DF[["ethnicity"]][SUMM.DF[["recording_session_label"]]==participant]
+    age <-  SUMM.DF[["scanAge"]][SUMM.DF[["recording_session_label"]]==participant]
     OCULO.DF[["actScore"]][OCULO.DF[["RECORDING_SESSION_LABEL"]]==participant] <- score
+    OCULO.DF[["gender"]][OCULO.DF[["RECORDING_SESSION_LABEL"]]==participant] <- gender
+    OCULO.DF[["race"]][OCULO.DF[["RECORDING_SESSION_LABEL"]]==participant] <- race
+    OCULO.DF[["age"]][OCULO.DF[["RECORDING_SESSION_LABEL"]]==participant] <- age
   }
-  return(OCULO.DF[!is.na(OCULO.DF[["actScore"]])])
+  modelDF <- OCULO.DF[!is.na(OCULO.DF[["actScore"]]) and OCULO.DF[["RECORDING_SESSION_LABEL"]]!=PARTICIPANT]
+  testDF <- OCULO.DF[OCULO.DF[["RECORDING_SESSION_LABEL"]]==PARTICIPANT]
+  return_list <- list(modelDF,testDF)
+  return(return_list)
 }
 
-#   function to make a model
+#   function to make a model. Using gender, race, and age instead of recording_session_label because the label will be different for the predicted subject and is arbitrary.
 model <- function(INPUT){
-  score = lmer(actScore ~ CURRENT_FIX_DURATION + NEXT_SAC_AMPLITUDE + (1|RUN) + (1|RECORDING_SESSION_LABEL), data=INPUT)
+  score = lmer(actScore ~ CURRENT_FIX_DURATION + NEXT_SAC_AMPLITUDE + REGRESSIONS + (1|RUN) + (1|gender) + (1|race) + (1|age), data=INPUT)
   return(score)
 }
-#   function to make predictions based on model
+
+#   function to predict ACT based on model
+predictACT <- function(PARTICIPANT_DATA,MODEL){
+  INTERCEPT = 
+  BETA_DUR = 
+  BETA_AMP =
+  BETA_REG = 
+  BETA_RUN1 =
+  BETA_RUN2 = 
+  BETA_RUN3 =
+  BETA_gender = 
+  BETA_race = 
+  BETA_age =
+  act = INTERCEPT + BETA_DUR*something + BETA_AMP*somethings
+  return(act)
+}
+
 
 #   function to evaluate predictions
+evalPrediction <- function()
+
   
-# execute
+# EXECUTE
 
 #   read in dataframes
 ET_DATA <- read.csv(ET_DATA,header=TRUE,sep=",",na.strings = ".")
 SUMM_DATA <- read.csv(SUMM_DATA,header=TRUE,sep=",",na.strings = "NA")
 
-# output
+# save output?
