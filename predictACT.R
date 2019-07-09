@@ -11,7 +11,7 @@ WORK="~/Box/LukeLab/SkilledReadingStudy/results/predictACT" # path to working di
 ET_DATA="~/Box/LukeLab/SkilledReadingStudy/data/eyeTrackingData/allRuns.csv" # path for eye tracking dataframe
 SUMM_DATA="~/Box/LukeLab/SkilledReadingStudy/data/demographics/participantDemographicsWithETStats.csv" # path for summary dataframe
 OUT_NAME="results.txt" # destination file name for output
-list.of.packages <- c("lme4","lmerTest") # list of packages to use in analysis
+list.of.packages <- c("stats","lme4","lmerTest") # list of packages to use in analysis
 
 # load libraries
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]                           # compare the list to the installed packages list and add missing packages to new list
@@ -28,7 +28,7 @@ makeParticipantList <- function(OCULO.DF,SUMM.DF) {
 }
 
 #   add ACT score to ET_DATA and then select only participants with an ACT
-addACT <- function(OCULO.DF,SUMM.DF,LIST,PARTICIPANT){
+addACT <- function(OCULO.DF,SUMM.DF,LIST,PARTICIPANT) {
   for (participant in LIST) {
     score <- SUMM.DF[["actScore"]][SUMM.DF[["recording_session_label"]]==participant]
     gender <- SUMM.DF[["male.female"]][SUMM.DF[["recording_session_label"]]==participant]
@@ -39,7 +39,7 @@ addACT <- function(OCULO.DF,SUMM.DF,LIST,PARTICIPANT){
     OCULO.DF[["race"]][OCULO.DF[["RECORDING_SESSION_LABEL"]]==participant] <- race
     OCULO.DF[["age"]][OCULO.DF[["RECORDING_SESSION_LABEL"]]==participant] <- age
   }
-  modelDF <- OCULO.DF[!is.na(OCULO.DF[["actScore"]]) and OCULO.DF[["RECORDING_SESSION_LABEL"]]!=PARTICIPANT]
+  modelDF <- OCULO.DF[!is.na(OCULO.DF[["actScore"]])==TRUE & OCULO.DF[["RECORDING_SESSION_LABEL"]]!=PARTICIPANT]
   testDF <- OCULO.DF[OCULO.DF[["RECORDING_SESSION_LABEL"]]==PARTICIPANT]
   return_list <- list(modelDF,testDF)
   return(return_list)
@@ -48,28 +48,21 @@ addACT <- function(OCULO.DF,SUMM.DF,LIST,PARTICIPANT){
 #   function to make a model. Using gender, race, and age instead of recording_session_label because the label will be different for the predicted subject and is arbitrary.
 model <- function(INPUT){
   score = lmer(actScore ~ CURRENT_FIX_DURATION + NEXT_SAC_AMPLITUDE + REGRESSIONS + (1|RUN) + (1|gender) + (1|race) + (1|age), data=INPUT)
+  #score = lmer(actScore ~ CURRENT_FIX_DURATION + NEXT_SAC_AMPLITUDE + REGRESSIONS + (1|RUN) + (1|RECORDING_SESSION_LABEL), data=INPUT)
   return(score)
 }
 
 #   function to predict ACT based on model
 predictACT <- function(PARTICIPANT_DATA,MODEL){
-  INTERCEPT = 
-  BETA_DUR = 
-  BETA_AMP =
-  BETA_REG = 
-  BETA_RUN1 =
-  BETA_RUN2 = 
-  BETA_RUN3 =
-  BETA_gender = 
-  BETA_race = 
-  BETA_age =
-  act = INTERCEPT + BETA_DUR*something + BETA_AMP*somethings
+  act <- predict(PARTICIPANT_DATA,MODEL)
   return(act)
 }
 
 
 #   function to evaluate predictions
-evalPrediction <- function()
+evalPrediction <- function(true,predicted){
+  
+}
 
   
 # EXECUTE
@@ -78,4 +71,6 @@ evalPrediction <- function()
 ET_DATA <- read.csv(ET_DATA,header=TRUE,sep=",",na.strings = ".")
 SUMM_DATA <- read.csv(SUMM_DATA,header=TRUE,sep=",",na.strings = "NA")
 
+LIST <- makeParticipantList(ET_DATA,SUMM_DATA) #debug
+BigList <- addACT(ET_DATA,SUMM_DATA,LIST,"Luke_Reading_S19") #debug
 # save output?
