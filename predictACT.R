@@ -4,9 +4,9 @@
 #   project: Skilled Reading Project
 #   objective: predict ACT score based on eye tracking measures of reading
 
-# environment
-STUDY="/Box/LukeLab/SkilledReadingStudy" # path to study directory
-ANAL="/Dropbox/Lab data & Papers/analyses/predictACT" # path to analysis directory
+#### ENVIRONMENT ####
+STUDY="~/Box/LukeLab/SkilledReadingStudy" # path to study directory
+ANAL="~/Dropbox/Lab data & Papers/analyses/predictACT" # path to analysis directory
 WORK="~/Box/LukeLab/SkilledReadingStudy/results/predictACT" # path to working directory
 ET_DATA="~/Box/LukeLab/SkilledReadingStudy/data/eyeTrackingData/allRuns.csv" # path for eye tracking dataframe
 SUMM_DATA="~/Box/LukeLab/SkilledReadingStudy/data/demographics/participantDemographicsWithETStats.csv" # path for summary dataframe
@@ -19,7 +19,7 @@ if(length(new.packages)) install.packages(new.packages, dependencies = TRUE)    
 lapply(list.of.packages,library,character.only = TRUE)                                                                # load packages
 
 
-# FUNCTIONS
+#### FUNCTIONS ####
 
 #   function to select participants with ACT score
 makeParticipantList <- function(OCULO.DF,SUMM.DF) {
@@ -31,13 +31,9 @@ makeParticipantList <- function(OCULO.DF,SUMM.DF) {
 addACT <- function(OCULO.DF,SUMM.DF,LIST,PARTICIPANT) {
   for (participant in LIST) {
     score <- SUMM.DF[["actScore"]][SUMM.DF[["recording_session_label"]]==participant]
-    gender <- SUMM.DF[["male.female"]][SUMM.DF[["recording_session_label"]]==participant]
-    race <- SUMM.DF[["ethnicity"]][SUMM.DF[["recording_session_label"]]==participant]
-    age <-  SUMM.DF[["scanAge"]][SUMM.DF[["recording_session_label"]]==participant]
+    regressions <- SUMM.DF[["REGRESSIONS"]][SUMM.DF[["recording_session_label"]]==participant]
     OCULO.DF[["actScore"]][OCULO.DF[["RECORDING_SESSION_LABEL"]]==participant] <- score
-    OCULO.DF[["gender"]][OCULO.DF[["RECORDING_SESSION_LABEL"]]==participant] <- gender
-    OCULO.DF[["race"]][OCULO.DF[["RECORDING_SESSION_LABEL"]]==participant] <- race
-    OCULO.DF[["age"]][OCULO.DF[["RECORDING_SESSION_LABEL"]]==participant] <- age
+    OCULO.DF[["REGRESSIONS"]][OCULO.DF[["RECORDING_SESSION_LABEL"]]==participant] <- regressions
   }
   modelDF <- OCULO.DF[!is.na(OCULO.DF[["actScore"]])==TRUE & OCULO.DF[["RECORDING_SESSION_LABEL"]]!=PARTICIPANT]
   testDF <- OCULO.DF[OCULO.DF[["RECORDING_SESSION_LABEL"]]==PARTICIPANT]
@@ -45,10 +41,9 @@ addACT <- function(OCULO.DF,SUMM.DF,LIST,PARTICIPANT) {
   return(return_list)
 }
 
-#   function to make a model. Using gender, race, and age instead of recording_session_label because the label will be different for the predicted subject and is arbitrary.
+#   function to make a model.
 model <- function(INPUT){
-  score = lmer(actScore ~ CURRENT_FIX_DURATION + NEXT_SAC_AMPLITUDE + REGRESSIONS + (1|RUN) + (1|gender) + (1|race) + (1|age), data=INPUT)
-  #score = lmer(actScore ~ CURRENT_FIX_DURATION + NEXT_SAC_AMPLITUDE + REGRESSIONS + (1|RUN) + (1|RECORDING_SESSION_LABEL), data=INPUT)
+  score = lmer(actScore ~ CURRENT_FIX_DURATION + NEXT_SAC_AMPLITUDE + REGRESSIONS + (1|RUN) + (1|RECORDING_SESSION_LABEL), data=INPUT)
   return(score)
 }
 
@@ -61,16 +56,29 @@ predictACT <- function(PARTICIPANT_DATA,MODEL){
 
 #   function to evaluate predictions
 evalPrediction <- function(true,predicted){
-  
+  R_sq=cor(true,predicted,use = "pairwise.complete.obs")^2
+  return(r_sq)
 }
 
+#   function to execute above functions and output data?
+order66 <- function(INPUT){
+  #all the things
+}
   
-# EXECUTE
+#### EXECUTE ####
 
-#   read in dataframes
+# read in dataframes
 ET_DATA <- read.csv(ET_DATA,header=TRUE,sep=",",na.strings = ".")
 SUMM_DATA <- read.csv(SUMM_DATA,header=TRUE,sep=",",na.strings = "NA")
 
-LIST <- makeParticipantList(ET_DATA,SUMM_DATA) #debug
-BigList <- addACT(ET_DATA,SUMM_DATA,LIST,"Luke_Reading_S19") #debug
+# make predictions
+participants <- makeParticipantList(ET_DATA,SUMM_DATA)
+for (person in participants) {
+  data <- addACT(ET_DATA,SUMM_DATA,participants,person)
+  
+}
+
+
+# evaluate predictions
+
 # save output?
