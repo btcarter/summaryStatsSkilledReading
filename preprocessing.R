@@ -19,7 +19,7 @@ KEEP=c("Luke_Reading_S1", "Luke_Reading_S22", "Luke_Reading_S33", "Luke_Reading_
 #### COMMANDS ####
 READING <- data.frame()
 for (i in LIST) {
-  runNum = gsub("~\\/Box\\/LukeLab\\/SkilledReadingStudy\\/data\\/eyeTrackingData\\/Run(\\d+).\\d-\\d+.txt","\\1",i) # extract run number from filename
+  runNum = gsub("~\\/Box\\/LukeLab\\/SkilledReadingStudy\\/data\\/eyeTrackingData\\/Run(\\d+).\\d+-\\d+.txt","\\1",i) # extract run number from filename
   i <- read.table(i,header=TRUE,sep="\t")                     # read in table
   i$RUN <- runNum                                             # add run variable
   READING<-rbind(READING,i)                                   # bind table to dataframe
