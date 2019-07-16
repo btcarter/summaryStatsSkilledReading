@@ -8,7 +8,7 @@
 ## Things to try
 Predictions using ET project.
 - [ ] does ACT predict reading?
-- [ ] does reading predict ACT?
+- [ ] does reading predict ACT? (this was a bust but educational)
 
 AI study - can supervised learning find key indicators for ACT scores in oculomotor reading behavior and cortical anatomy measures? What about resting data?
 

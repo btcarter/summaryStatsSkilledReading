@@ -34,7 +34,7 @@ EYES <- read.csv(EYES, header =TRUE,sep=",",na.strings = ".")
 # compute summary statistics for eye tracking data and put it in the DEMO dataframe
 #   function to compute the mean of the input variable for each participant
 makeMeans <- function(variable,demographicDF,etDF){
-  vName=as.name(paste(as.character(variable),"_µ",sep=""))
+  vName=as.name(paste(as.character(variable),"_mu",sep=""))
   agged <- aggregate(etDF[[variable]], list(etDF$RECORDING_SESSION_LABEL),FUN = "mean", na.rm = TRUE)
   demographicDF[[vName]] <- agged[["x"]][demographicDF[["recording_session_label"]] == agged[["Group.1"]]]
   return(demographicDF)
@@ -42,7 +42,7 @@ makeMeans <- function(variable,demographicDF,etDF){
 
 #   function to compute standard deviation of the input variable for each participant
 makeSigma <- function(variable,demographicDF,etDF){
-  vName=as.name(paste(as.character(variable),"_σ",sep=""))
+  vName=as.name(paste(as.character(variable),"_sigma",sep=""))
   agged <- aggregate(etDF[[variable]], list(etDF$RECORDING_SESSION_LABEL),FUN = "SD", na.rm = TRUE)
   demographicDF[[vName]] <- agged[["x"]][demographicDF[["recording_session_label"]] == agged[["Group.1"]]]
   return(demographicDF)
