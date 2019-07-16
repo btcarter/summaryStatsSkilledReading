@@ -41,7 +41,7 @@ predictACT <- function(OCULO.DF,SUMM.DF,LIST,PARTICIPANT) {
   }
   modelDF <- OCULO.DF[ which(!is.na(OCULO.DF[["actScore"]])==TRUE & OCULO.DF[["RECORDING_SESSION_LABEL"]]!=PARTICIPANT & !is.na(OCULO.DF[["NEXT_SAC_AMPLITUDE"]]==TRUE)), ]                                      # dataframe without participant of interest's data
   testDF <- OCULO.DF[OCULO.DF[["RECORDING_SESSION_LABEL"]]==PARTICIPANT & which(is.na(OCULO.DF[["NEXT_SAC_AMPLITUDE"]])==FALSE), ]                                                                                      # dataframe only with participant of interest's data
-  formula = lmer(actScore ~ log(CURRENT_FIX_DURATION) + log(NEXT_SAC_AMPLITUDE) + REGRESSIONS + (1|RUN) + (1|RECORDING_SESSION_LABEL), data=modelDF)      # model
+  formula = lmer(actScore ~ log(CURRENT_FIX_DURATION) + log(NEXT_SAC_AMPLITUDE+1) + REGRESSIONS + (1|RUN) + (1|RECORDING_SESSION_LABEL), data=modelDF)      # model
   #formula = lmer(actScore ~ log(CURRENT_FIX_DURATION) + log(NEXT_SAC_AMPLITUDE) + REGRESSIONS+ (1|RUN) + (1|RECORDING_SESSION_LABEL), data=modelDF)
   testDF$predictedACT <- predict(testDF,formula)                                                                                                                # make a prediction
   return(prediction)                                                                                                                                            # spit it out
